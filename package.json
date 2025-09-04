@@ -1,0 +1,27 @@
+{
+  "name": "wordle-sms",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "tsc --noEmit",
+    "start": "twilio-run --functions-folder dist/functions",
+    "deploy": "twilio-run deploy --functions-folder dist/functions",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "predeploy": "npm run build"
+  },
+  "dependencies": {
+    "@twilio-labs/serverless-runtime-types": "^4.0.0",
+    "@twilio/runtime-handler": "2.0.3",
+    "axios": "^1.11.0",
+    "twilio": "5.0.3"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "twilio-run": "^4.2.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": "22"
+  }
+}
