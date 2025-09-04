@@ -8,3 +8,6 @@ Use Wordle from your text messages without internet access, either from a smartp
 4. On your Twilio console, make sure you have [an active phone number](https://console.twilio.com/us1/develop/phone-numbers/manage/incoming)
 5. Configure this phone number to call the `wordle-sms/wordle` function when a message comes in
 6. (Optional) If using the trial version, don't forget to add your phone number to the list of whitelisted numbers
+
+## How it looks on a flip phone
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/b8eec0e9-b96a-48ab-b30d-1f5d9c511d0b" />
