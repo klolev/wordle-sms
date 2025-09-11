@@ -1,5 +1,10 @@
 {
-	"commands": {},
+	"commands": {
+		"deploy": {
+			"loadSystemEnv": true,
+			"env": ".env.example"
+		}
+	},
 	"environments": {},
 	"projects": {},
 	"assets": false 	/* Upload assets. Can be turned off with --no-assets */,
