@@ -72,15 +72,17 @@ const getFormattedState = (state: GameState) => (
     })
     .join("")
   ))
-  .join("\n") + (isGameOver(state) ? "" : ("Remaining letters: " + getRemainingLetters(state)))
+  .join("\n") + (isGameOver(state) ? "" : ("\nRemaining letters: " + getRemainingLetters(state).join("")))
 )
 
 const LETTERS = "abcdefghijklmnopqrstuvwxyz"
-const getRemainingLetters = (state: GameState) => (
-  state.attempts.reduce((remaining, attempt) => (
+const getRemainingLetters = (state: GameState) => {
+  let remaining = Array.from(state.attempts.reduce((remaining, attempt) => (
     remaining.difference(new Set(attempt).difference(new Set(state.solution)))
-  ), new Set(LETTERS))
-)
+  ), new Set(LETTERS)))
+  remaining.sort()
+  return remaining
+}
 
 export const handler: ServerlessFunctionSignature = async function (
   context: Context<MyContext>,
