@@ -7,7 +7,8 @@ export interface GameState {
 
 export enum AddAttemptError {
   notAWord,
-  gameIsOver
+  gameIsOver,
+  alreadyUsed
 }
 
 export const makeGame = (solution: string) => (
@@ -22,6 +23,10 @@ export const addAttempt: (attempt: string) => (state: GameState) => [GameState, 
   const cleanedAttempt = attempt.toLowerCase().trim()
   if (!WORDS.includes(cleanedAttempt)) {
     return [state, AddAttemptError.notAWord]
+  }
+
+  if (!state.attempts.includes(cleanedAttempt)) {
+    return [state, AddAttemptError.alreadyUsed]
   }
 
   return [{...state, attempts: [...state.attempts, cleanedAttempt]}, null]

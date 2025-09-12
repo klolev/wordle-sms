@@ -22,7 +22,8 @@ interface GameState {}
 
 enum AddAttemptError {
   notAWord,
-  gameIsOver
+  gameIsOver,
+  alreadyUsed,
 }
 
 interface WordleCore {
@@ -30,6 +31,13 @@ interface WordleCore {
   makeGame: (solution: string) => GameState
   getFormattedState: (state: GameState) => string
 }
+
+const assets = Runtime.getAssets()
+const {
+  addAttempt, 
+  makeGame,
+  getFormattedState
+} = require(assets['/wordle-core.js'].path) as WordleCore
 
 const baseURL = "https://www.nytimes.com/svc/wordle/v2/"
 
@@ -51,12 +59,6 @@ export const handler: ServerlessFunctionSignature = async function (
   const twiml = new Twilio.twiml.MessagingResponse()
   const phoneNumber = event.From || '+15105550100'
   const incomingMessage = event.Body?.toLowerCase().slice(0, 5) ?? "aaaaa"
-  const path = Runtime.getAssets()['/wordle-core.js'].path
-  const {
-    addAttempt, 
-    makeGame,
-    getFormattedState
-  } = require(path) as WordleCore
 
   try {
     const date = new Date()
@@ -87,6 +89,9 @@ export const handler: ServerlessFunctionSignature = async function (
         break
       case AddAttemptError.gameIsOver:
         twiml.message("Game over, come back tomorrow!")
+        break
+      case AddAttemptError.alreadyUsed:
+        twiml.message(incomingMessage + ": already used")
         break
       case null:
 	twiml.message(formatted)
