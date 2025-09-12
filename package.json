@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "test": "tsc --noEmit && jest",
-    "start": "twilio-run --functions-folder dist/functions",
-    "deploy": "twilio-run deploy --functions-folder dist/functions --username $ACCOUNT_SID --password $AUTH_TOKEN --force",
+    "start": "twilio-run --functions-folder dist/functions --assets-folder dist/assets",
+    "deploy": "twilio-run deploy --functions-folder dist/functions --assets-folder dist/assets --username $ACCOUNT_SID --password $AUTH_TOKEN --force",
     "build": "tsc",
     "prestart": "npm run build",
     "predeploy": "npm run build"

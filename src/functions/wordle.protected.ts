@@ -8,7 +8,6 @@ import {
   ServerlessEventObject,
 } from '@twilio-labs/serverless-runtime-types/types';
 import axios from "axios";
-import { GameState, addAttempt, AddAttemptError, getFormattedState } from "../core/wordle-core"
 
 type MyEvent = {
   From?: string;
@@ -18,6 +17,19 @@ type MyEvent = {
 type MyContext = {
   GREETING?: string;
 };
+
+interface GameState {}
+
+enum AddAttemptError {
+  notAWord,
+  gameIsOver
+}
+
+interface WordleCore {
+  addAttempt: (attempt: string) => (state: GameState) => [GameState, AddAttemptError]
+  makeGame: (solution: string) => GameState
+  getFormattedState: (state: GameState) => string
+}
 
 const baseURL = "https://www.nytimes.com/svc/wordle/v2/"
 
@@ -36,9 +48,15 @@ export const handler: ServerlessFunctionSignature = async function (
   callback: ServerlessCallback
 ) {
   const client = context.getTwilioClient()
-  const twiml = new Twilio.twiml.MessagingResponse();
-  const phoneNumber = event.From || '+15105550100';
-  const incomingMessage = event.Body?.toLowerCase().slice(0, 5) ?? "aaaaa";
+  const twiml = new Twilio.twiml.MessagingResponse()
+  const phoneNumber = event.From || '+15105550100'
+  const incomingMessage = event.Body?.toLowerCase().slice(0, 5) ?? "aaaaa"
+  const path = Runtime.getAssets()['/wordle-core.js'].path
+  const {
+    addAttempt, 
+    makeGame,
+    getFormattedState
+  } = require(path) as WordleCore
 
   try {
     const date = new Date()
@@ -57,8 +75,8 @@ export const handler: ServerlessFunctionSignature = async function (
     })
     lastMessages.reverse()
     const state = lastMessages.map(x => x.body).reduce(
-      (state: GameState, message: string) => addAttempt(message)(state)[0], 
-      { attempts: [], solution }
+      (state, message) => addAttempt(message)(state)[0], 
+      makeGame(solution)
     )
 
     const [newState, error] = addAttempt(incomingMessage)(state)
@@ -66,10 +84,13 @@ export const handler: ServerlessFunctionSignature = async function (
     switch (error) {
       case AddAttemptError.notAWord:
         twiml.message(incomingMessage + ": not a word")
+        break
       case AddAttemptError.gameIsOver:
         twiml.message("Game over, come back tomorrow!")
+        break
       case null:
 	twiml.message(formatted)
+        break
     }
 
     callback(null, twiml);
