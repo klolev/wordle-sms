@@ -25,7 +25,7 @@ export const addAttempt: (attempt: string) => (state: GameState) => [GameState, 
     return [state, AddAttemptError.notAWord]
   }
 
-  if (!state.attempts.includes(cleanedAttempt)) {
+  if (state.attempts.includes(cleanedAttempt)) {
     return [state, AddAttemptError.alreadyUsed]
   }
 
