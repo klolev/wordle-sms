@@ -5,7 +5,7 @@
   "scripts": {
     "test": "tsc --noEmit && jest",
     "start": "twilio-run --functions-folder dist/functions",
-    "deploy": "twilio-run deploy --functions-folder dist/functions --username $ACCOUNT_SID --password $AUTH_TOKEN",
+    "deploy": "twilio-run deploy --functions-folder dist/functions --username $ACCOUNT_SID --password $AUTH_TOKEN --force",
     "build": "tsc",
     "prestart": "npm run build",
     "predeploy": "npm run build"
